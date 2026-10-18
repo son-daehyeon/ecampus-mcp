@@ -26,8 +26,8 @@
 Node.js 20 이상이 필요합니다.
 
 ```bash
-git clone git@github.com:son-daehyeon/ecampus-mcp.git
-cd ecampus-mcp
+git clone git@github.com:son-daehyeon/ecampus-mcp.git ~/.local/share/mcp/ecampus-mcp
+cd ~/.local/share/mcp/ecampus-mcp
 npm install
 ```
 
@@ -54,7 +54,7 @@ node src/index.js login
 **Claude Code**
 
 ```bash
-claude mcp add ecampus --scope user -- node /절대경로/ecampus-mcp/src/index.js
+claude mcp add ecampus --scope user -- node ~/.local/share/mcp/ecampus-mcp/src/index.js
 ```
 
 **Claude Desktop** — `~/Library/Application Support/Claude/claude_desktop_config.json`
@@ -64,7 +64,7 @@ claude mcp add ecampus --scope user -- node /절대경로/ecampus-mcp/src/index.
   "mcpServers": {
     "ecampus": {
       "command": "node",
-      "args": ["/절대경로/ecampus-mcp/src/index.js"]
+      "args": ["/Users/<you>/.local/share/mcp/ecampus-mcp/src/index.js"]
     }
   }
 }
