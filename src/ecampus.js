@@ -405,15 +405,18 @@ export async function downloadVideo(c, cmid, dir) {
   if (!contentId) throw new EcampusError('동영상 정보를 찾을 수 없습니다 (열람 기간이 아니거나 접근 권한이 없습니다).');
   const xml = await (await fetch(`https://kcms.kookmin.ac.kr/viewer/ssplayer/uniplayer_support/content.php?content_id=${contentId}`)).text();
   const x = cheerio.load(xml, { xmlMode: true });
-  const uri = x('media_uri[method=progressive][target=all]').first().text().trim();
-  const files = x('main_media').map((_, el) => x(el).text().trim()).get();
-  if (!uri || !files.length) throw new EcampusError('다운로드할 수 있는 영상 파일이 없는 콘텐츠입니다.');
+  const template = x('media_uri[method=progressive][target=all]').first().text().trim();
+  const urls = template
+    ? x('main_media_list > main_media').map((_, el) => template.replace('[MEDIA_FILE]', x(el).text().trim())).get()
+    : x('main_media > desktop > html5 > media_uri').map((_, el) => x(el).text().trim()).get();
+  if (!urls.length) throw new EcampusError('다운로드할 수 있는 영상 파일이 없는 콘텐츠입니다.');
   const title = safeName(x('content_metadata > title').text().trim() || $('title').text().split(':').pop().trim() || contentId);
   const courseName = safeName($('title').text().split(':')[0].replace(/\s*\(.*$/, '').trim() || 'videos');
   const saved = [];
-  for (const [i, file] of files.entries()) {
-    const dest = freePath(path.join(resolveDir(dir), courseName, '동영상', `${title}${files.length > 1 ? `_${i + 1}` : ''}${path.extname(file) || '.mp4'}`));
-    saved.push(await c.download(uri.replace('[MEDIA_FILE]', file), dest));
+  for (const [i, url] of urls.entries()) {
+    const ext = path.extname(new URL(url).pathname) || '.mp4';
+    const dest = freePath(path.join(resolveDir(dir), courseName, '동영상', `${title}${urls.length > 1 ? `_${i + 1}` : ''}${ext}`));
+    saved.push(await c.download(url, dest));
   }
   return saved;
 }
