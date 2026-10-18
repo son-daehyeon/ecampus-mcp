@@ -1,0 +1,21 @@
+{
+  "name": "ecampus-mcp",
+  "version": "0.1.0",
+  "description": "국민대 eCampus MCP 서버",
+  "type": "module",
+  "bin": {
+    "ecampus-mcp": "src/index.js"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "check": "node src/check.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.1",
+    "cheerio": "^1.2.0",
+    "zod": "^4.6.7"
+  }
+}
